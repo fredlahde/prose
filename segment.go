@@ -31,14 +31,14 @@ import (
 // punktSentenceTokenizer is an extension of the Go implementation of the Punkt
 // sentence tokenizer (https://github.com/neurosnap/sentences), with a few
 // minor improvements (see https://github.com/neurosnap/sentences/pull/18).
-type punktSentenceTokenizer struct {
+type PunktSentenceTokenizer struct {
 	tokenizer *sentences.DefaultSentenceTokenizer
 }
 
 // newPunktSentenceTokenizer creates a new PunktSentenceTokenizer and loads
 // its English model.
-func newPunktSentenceTokenizer() *punktSentenceTokenizer {
-	var pt punktSentenceTokenizer
+func NewPunktSentenceTokenizer() *PunktSentenceTokenizer {
+	var pt PunktSentenceTokenizer
 	var err error
 
 	pt.tokenizer, err = newSentenceTokenizer(nil)
@@ -48,7 +48,7 @@ func newPunktSentenceTokenizer() *punktSentenceTokenizer {
 }
 
 // segment splits text into sentences.
-func (p punktSentenceTokenizer) segment(text string) []Sentence {
+func (p PunktSentenceTokenizer) segment(text string) []Sentence {
 	tokens := p.tokenizer.Tokenize(text)
 	sents := make([]Sentence, len(tokens))
 	for i := range tokens {

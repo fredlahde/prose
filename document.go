@@ -51,6 +51,13 @@ func UsingModel(model *Model) DocOpt {
 	}
 }
 
+// UsingTokenizer sets the tokenizer to use
+func UsingTokenizer(tokenizer *PunktSentenceTokenizer) DocOpt {
+	return func(doc *Document, opts *DocOpts) {
+		doc.tokenizer = tokenizer
+	}
+}
+
 // A Document represents a parsed body of text.
 type Document struct {
 	Model *Model
@@ -60,6 +67,7 @@ type Document struct {
 	entities  []Entity
 	sentences []Sentence
 	tokens    []*Token
+	tokenizer *PunktSentenceTokenizer
 }
 
 // Tokens returns `doc`'s tokens.
@@ -107,8 +115,10 @@ func NewDocument(text string, opts ...DocOpt) (*Document, error) {
 	}
 
 	if base.Segment {
-		segmenter := newPunktSentenceTokenizer()
-		doc.sentences = segmenter.segment(text)
+		if doc.tokenizer == nil {
+			doc.tokenizer = NewPunktSentenceTokenizer()
+		}
+		doc.sentences = doc.tokenizer.segment(text)
 	}
 	if base.Tokenize || base.Tag || base.Extract {
 		tokenizer := newIterTokenizer()
